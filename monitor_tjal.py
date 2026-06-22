@@ -595,11 +595,17 @@ def montar_slack(resumo, prev_geral=None, prev_destaques=None, prev_incidentes=N
         for it in inc:
             il.append(f"{it['pct']:>5.1f}  {_milhar(it['n']):>5}  {it['rotulo']}{_delta_pp(it['pct'], prev_incidentes, it['rotulo'])}")
         out.append("```\n" + "\n".join(il) + "\n```")
-    # Tabela completa por câmara
+    # Tabela completa por câmara (matéria + incidentes processuais top 8)
     for cam in resumo["orgaos"]:
         c = resumo["por_camara"][cam]
         out.append(f"\n*{cam}* — {_milhar(c['total'])} acórdãos")
         out.append("```\n" + _tabela_txt(c["areas"]) + "\n```")
+        ci = c.get("incidentes") or []
+        if ci:
+            il = [f"{'%':>5}  {'n':>4}  incidente processual (top 8)"]
+            for it in ci[:8]:
+                il.append(f"{it['pct']:>5.1f}  {it['n']:>4}  {it['rotulo']}")
+            out.append("```\n" + "\n".join(il) + "\n```")
     return "\n".join(out)
 
 
