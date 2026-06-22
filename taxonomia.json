@@ -1,5 +1,5 @@
 {
-  "_doc": "Taxonomia do Monitor Câmaras Cíveis TJ/AL. 'area_keywords' é ORDENADO (1º match vence); cada item é [area, [palavras-chave em minúsculo]]. O match é feito 1º sobre o ASSUNTO do CNJ, depois sobre a EMENTA. 'classe_norm' são rótulos curtos especiais (fora isso, remove-se o sufixo ' Cível'). 'tema_merge' funde assuntos sinônimos num tema canônico (substring minúscula -> rótulo). Arquivo cresce com o uso: o modelo (Sonnet) acrescenta mapeamentos novos do resíduo.",
+  "_doc": "Taxonomia do Monitor Câmaras Cíveis TJ/AL. 'area_keywords' é ORDENADO (1º match vence); cada item é [area, [palavras-chave em minúsculo]]. O match é feito 1º sobre o ASSUNTO do CNJ, depois sobre a EMENTA. 'classe_norm' são rótulos curtos especiais (fora isso, remove-se o sufixo ' Cível'). 'tema_merge' funde assuntos sinônimos num tema canônico (substring minúscula -> rótulo). 'subtemas_ementa' recorta uma ÁREA em sub-blocos lidos na EMENTA INTEIRA (assunto + ementa) — ORDENADO, 1º match vence; serve para destacar produtos que a etiqueta CNJ esconde (ex.: consignado some dentro de 'Contratos Bancários'). Vira a coluna 'subtema' no classificado e o bloco 'Destaque' no Slack/resumo. Arquivo cresce com o uso: o modelo (Sonnet) acrescenta mapeamentos novos do resíduo.",
 
   "classe_norm": {
     "Apelação / Remessa Necessária": "Apelação/Remessa",
@@ -27,6 +27,18 @@
     ["Processual Civil", ["cumprimento de sentença", "cumprimento de sentenca", "execução de título", "execucao de titulo", "penhora", "gratuidade", "justiça gratuita", "justica gratuita", "assistência judiciária", "assistencia judiciaria", "honorários advocatícios", "honorarios advocaticios", "custas", "prescrição", "prescricao", "decadência", "nulidade", "competência", "competencia", "embargos à execução", "embargos a execucao", "impugnação ao cumprimento", "liquidação", "astreintes", "multa cominatória", "multa cominatoria", "tutela provisória", "tutela provisoria", "antecipação de tutela", "antecipacao de tutela", "desconsideração da personalidade", "desconsideracao da personalidade", "incidente de desconsideração"]],
     ["Registros Públicos", ["registro civil", "retificação de registro", "retificacao de registro", "registro de imóveis", "registro de imoveis", "alteração de nome", "alteracao de nome", "retificação de área", "retificacao de area", "registro público"]]
   ],
+
+  "subtemas_ementa": {
+    "Bancário e Financeiro": [
+      ["Consignado (incl. RMC/cartão consignado)", ["consignad", "rmc", "reserva de margem", "margem consignável", "margem consignavel", "desconto em folha", "descontos em folha", "empréstimo em folha", "emprestimo em folha", "desconto em benefício", "desconto em beneficio", "descontos em benefício", "descontos em beneficio"]],
+      ["Cartão de crédito (rotativo/fatura)", ["cartão de crédito", "cartao de credito", "cartão de débito", "cartao de debito", "fatura do cartão", "fatura do cartao", "rotativo", "limite do cartão", "limite do cartao"]],
+      ["Veículo (alienação fiduciária / busca e apreensão)", ["alienação fiduciária", "alienacao fiduciaria", "busca e apreensão", "busca e apreensao", "financiamento de veículo", "financiamento de veiculo", "arrendamento mercantil", "leasing"]],
+      ["PASEP / PIS", ["pasep", "pis/pasep", "pis-pasep", "pis e pasep"]],
+      ["Poupança / planos econômicos (expurgos)", ["expurgo", "poupança", "poupanca", "caderneta", "plano econômico", "plano economico", "plano collor", "plano verão", "plano verao", "plano bresser", "cruzado novo"]],
+      ["Tarifas / juros / revisional", ["tarifa", "juros remuneratórios", "juros remuneratorios", "anatocismo", "capitalização de juros", "capitalizacao de juros", "revisional", "revisão de contrato", "revisao de contrato", "comissão de permanência", "comissao de permanencia", "encargos abusivos"]],
+      ["Cédula / contrato de crédito bancário", ["cédula de crédito", "cedula de credito", "contrato bancário", "contrato bancario", "contratos bancários", "contratos bancarios", "abertura de crédito", "abertura de credito", "cheque especial", "capital de giro", "financiamento", "empréstimo", "emprestimo", "mútuo", "mutuo", "confissão de dívida", "confissao de divida"]]
+    ]
+  },
 
   "tema_merge": {
     "inscrição indevida": "Negativação indevida",

@@ -319,7 +319,7 @@ def _cmd_coletar(args):
 # ----------------------------------------------------------------------------- #
 import json
 
-CAMPOS_CLASS = CAMPOS + ["classe_curta", "area", "tema", "precisa_llm"]
+CAMPOS_CLASS = CAMPOS + ["classe_curta", "area", "tema", "subtema", "precisa_llm"]
 
 
 def carregar_taxonomia(caminho=None):
@@ -353,14 +353,30 @@ def _tema(assunto, tax):
     return assunto.strip()
 
 
+def _achar_subtema(area, assunto, ementa, tax):
+    """Recorta uma área em sub-blocos lidos na EMENTA INTEIRA (não só assunto).
+    Ordenado, 1º match vence; '' se a área não tem recorte; 'Outros' se nenhum casa."""
+    regras = tax.get("subtemas_ementa", {}).get(area)
+    if not regras:
+        return ""
+    t = (assunto + " " + ementa).lower()
+    for label, kws in regras:
+        for kw in kws:
+            if kw in t:
+                return label
+    return "Outros"
+
+
 def classificar_linha(row, tax):
     classe_curta = _classe_curta(row.get("classe", ""), tax)
     assunto = row.get("assunto", "")
     # área: tenta pelo assunto (classificação oficial); fallback pela ementa
     area = _achar_area(assunto, tax) or _achar_area(row.get("ementa", "")[:600], tax)
     tema = _tema(assunto, tax) if assunto else ""
+    # subtema: recorte fino lido na ementa inteira (só p/ áreas com subtemas_ementa)
+    subtema = _achar_subtema(area, assunto, row.get("ementa", ""), tax) if area else ""
     precisa_llm = "1" if (not area or not tema) else ""
-    return classe_curta, area, tema, precisa_llm
+    return classe_curta, area, tema, subtema, precisa_llm
 
 
 def _cmd_classificar(args):
@@ -368,8 +384,8 @@ def _cmd_classificar(args):
     rows = list(csv.DictReader(open(args.inp, encoding="utf-8")))
     n_llm = 0
     for r in rows:
-        cc, area, tema, precisa = classificar_linha(r, tax)
-        r["classe_curta"], r["area"], r["tema"], r["precisa_llm"] = cc, area, tema, precisa
+        cc, area, tema, subtema, precisa = classificar_linha(r, tax)
+        r["classe_curta"], r["area"], r["tema"], r["subtema"], r["precisa_llm"] = cc, area, tema, subtema, precisa
         if precisa:
             n_llm += 1
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
@@ -411,22 +427,24 @@ def _ordena_camaras(nomes):
 
 
 def _carregar_tendencia(base_dir, rotulo_atual):
-    """Acha o registro datado anterior mais recente e devolve mapas de pct por área."""
+    """Acha o registro datado anterior mais recente e devolve (rotulo, pct por área, pct por subtema)."""
     if not base_dir or not os.path.isdir(base_dir):
-        return None, None
+        return None, None, None
     pat = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     cands = sorted([d for d in os.listdir(base_dir)
                     if pat.match(d) and d != rotulo_atual
                     and os.path.isfile(os.path.join(base_dir, d, "resumo.json"))])
     if not cands:
-        return None, None
+        return None, None, None
     anterior = cands[-1]
     try:
         prev = json.load(open(os.path.join(base_dir, anterior, "resumo.json"), encoding="utf-8"))
     except Exception:
-        return None, None
+        return None, None, None
     geral = {i["rotulo"]: i["pct"] for i in prev.get("geral", {}).get("areas", [])}
-    return anterior, geral
+    destaques = {d["area"]: {i["rotulo"]: i["pct"] for i in d.get("subtemas", [])}
+                 for d in prev.get("destaques", [])}
+    return anterior, geral, destaques
 
 
 def _camara(r):
@@ -435,7 +453,25 @@ def _camara(r):
     return ORGAOS_CIVEIS.get(cod) or ORGAOS_EXEC_FISCAL.get(cod) or (r.get("orgao") or "—")
 
 
-def agregar(rows, rotulo, janela, base_dir=None, gerado_em=None):
+def _destaques(rows, tax):
+    """Para cada área com 'subtemas_ementa', recorta os acórdãos dela por subtema.
+    pct = % DENTRO da área; pct_pauta = % da pauta total."""
+    out = []
+    total = len(rows)
+    for area in tax.get("subtemas_ementa", {}):
+        sub = [r for r in rows if (r.get("area") or "") == area]
+        if not sub:
+            continue
+        out.append({
+            "area": area,
+            "total": len(sub),
+            "pct_pauta": round(100.0 * len(sub) / total, 1) if total else 0.0,
+            "subtemas": _dist(sub, "subtema"),
+        })
+    return out
+
+
+def agregar(rows, rotulo, janela, base_dir=None, gerado_em=None, tax=None):
     camaras = _ordena_camaras({_camara(r) for r in rows})
     por_camara = {}
     for cam in camaras:
@@ -458,10 +494,11 @@ def agregar(rows, rotulo, janela, base_dir=None, gerado_em=None):
             "classes": _dist(rows, "classe_curta"),
             "temas": _dist(rows, "tema", top=20),
         },
+        "destaques": _destaques(rows, tax) if tax else [],
     }
-    anterior, prev_geral = _carregar_tendencia(base_dir, rotulo)
+    anterior, prev_geral, prev_destaques = _carregar_tendencia(base_dir, rotulo)
     resumo["tendencia_vs"] = anterior
-    return resumo, prev_geral
+    return resumo, prev_geral, prev_destaques
 
 
 def _tabela_txt(itens, base_label="matéria"):
@@ -471,7 +508,16 @@ def _tabela_txt(itens, base_label="matéria"):
     return "\n".join(linhas)
 
 
-def montar_slack(resumo, prev_geral=None):
+def _delta_pp(pct, prev_map, rotulo):
+    """String '  (+x.x p.p.)' se houver registro anterior; '' caso contrário."""
+    if prev_map and rotulo in prev_map:
+        d = round(pct - prev_map[rotulo], 1)
+        if abs(d) >= 0.1:
+            return f"  ({'+' if d > 0 else ''}{d} p.p.)"
+    return ""
+
+
+def montar_slack(resumo, prev_geral=None, prev_destaques=None):
     j = resumo["janela"]
     out = []
     out.append(f"*Monitor — Câmaras Cíveis do TJ/AL*")
@@ -482,13 +528,17 @@ def montar_slack(resumo, prev_geral=None):
     out.append("\n*Panorama geral — por matéria*")
     linhas = [f"{'%':>5}  {'n':>5}  matéria"]
     for it in resumo["geral"]["areas"]:
-        delta = ""
-        if prev_geral and it["rotulo"] in prev_geral:
-            d = round(it["pct"] - prev_geral[it["rotulo"]], 1)
-            if abs(d) >= 0.1:
-                delta = f"  ({'+' if d > 0 else ''}{d} p.p.)"
+        delta = _delta_pp(it["pct"], prev_geral, it["rotulo"])
         linhas.append(f"{it['pct']:>5.1f}  {_milhar(it['n']):>5}  {it['rotulo']}{delta}")
     out.append("```\n" + "\n".join(linhas) + "\n```")
+    # Destaques: recortes lidos na ementa (ex.: consignado × cartão dentro do Bancário)
+    for d in resumo.get("destaques", []):
+        prev = (prev_destaques or {}).get(d["area"], {})
+        out.append(f"\n*Destaque — dentro de {d['area']}*  ({_milhar(d['total'])} acórdãos · {d['pct_pauta']}% da pauta)")
+        sl = [f"{'%':>5}  {'n':>4}  recorte (lido na ementa)"]
+        for it in d["subtemas"]:
+            sl.append(f"{it['pct']:>5.1f}  {it['n']:>4}  {it['rotulo']}{_delta_pp(it['pct'], prev, it['rotulo'])}")
+        out.append("```\n" + "\n".join(sl) + "\n```")
     # Tabela completa por câmara
     for cam in resumo["orgaos"]:
         c = resumo["por_camara"][cam]
@@ -497,7 +547,14 @@ def montar_slack(resumo, prev_geral=None):
     return "\n".join(out)
 
 
-def montar_md(resumo, prev_geral=None):
+def _delta_md(pct, prev_map, rotulo):
+    if prev_map and rotulo in prev_map:
+        dd = round(pct - prev_map[rotulo], 1)
+        return f"{'+' if dd > 0 else ''}{dd}" if abs(dd) >= 0.1 else "—"
+    return ""
+
+
+def montar_md(resumo, prev_geral=None, prev_destaques=None):
     j = resumo["janela"]
     md = [f"# Monitor Câmaras Cíveis TJ/AL — {resumo['rotulo']}", "",
           f"- **Janela:** {j['inicio']} a {j['fim']} (por data de julgamento)",
@@ -507,11 +564,14 @@ def montar_md(resumo, prev_geral=None):
         md.append(f"- **Tendência comparada a:** {resumo['tendencia_vs']}")
     md += ["", "## Panorama geral — por matéria", "", "| % | n | matéria | Δ p.p. |", "|--:|--:|---|--:|"]
     for it in resumo["geral"]["areas"]:
-        d = ""
-        if prev_geral and it["rotulo"] in prev_geral:
-            dd = round(it["pct"] - prev_geral[it["rotulo"]], 1)
-            d = f"{'+' if dd > 0 else ''}{dd}" if abs(dd) >= 0.1 else "—"
-        md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} | {d} |")
+        md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} | {_delta_md(it['pct'], prev_geral, it['rotulo'])} |")
+    # Destaques: recortes lidos na ementa
+    for d in resumo.get("destaques", []):
+        prev = (prev_destaques or {}).get(d["area"], {})
+        md += ["", f"## Destaque — dentro de {d['area']} ({_milhar(d['total'])} acórdãos · {d['pct_pauta']}% da pauta)",
+               "", "| % | n | recorte (lido na ementa) | Δ p.p. |", "|--:|--:|---|--:|"]
+        for it in d["subtemas"]:
+            md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} | {_delta_md(it['pct'], prev, it['rotulo'])} |")
     md += ["", "## Por câmara — matéria"]
     for cam in resumo["orgaos"]:
         c = resumo["por_camara"][cam]
@@ -526,14 +586,16 @@ def montar_md(resumo, prev_geral=None):
 
 def _cmd_agregar(args):
     rows = list(csv.DictReader(open(args.inp, encoding="utf-8")))
+    tax = carregar_taxonomia(getattr(args, "taxonomia", None))
     janela = {"inicio": args.inicio, "fim": args.fim, "criterio": "data_julgamento"}
     base_dir = args.base_dir or os.path.dirname(os.path.abspath(args.saida_dir))
-    resumo, prev_geral = agregar(rows, args.rotulo, janela, base_dir=base_dir, gerado_em=args.gerado_em)
+    resumo, prev_geral, prev_destaques = agregar(rows, args.rotulo, janela, base_dir=base_dir,
+                                                 gerado_em=args.gerado_em, tax=tax)
     os.makedirs(args.saida_dir, exist_ok=True)
     json.dump(resumo, open(os.path.join(args.saida_dir, "resumo.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
-    open(os.path.join(args.saida_dir, "resumo.md"), "w", encoding="utf-8").write(montar_md(resumo, prev_geral))
-    open(os.path.join(args.saida_dir, "slack.txt"), "w", encoding="utf-8").write(montar_slack(resumo, prev_geral))
+    open(os.path.join(args.saida_dir, "resumo.md"), "w", encoding="utf-8").write(montar_md(resumo, prev_geral, prev_destaques))
+    open(os.path.join(args.saida_dir, "slack.txt"), "w", encoding="utf-8").write(montar_slack(resumo, prev_geral, prev_destaques))
     print(f"OK: resumo.json / resumo.md / slack.txt -> {args.saida_dir}", file=sys.stderr)
     print(f"   total={resumo['total']} | órgãos={len(resumo['orgaos'])}"
           + (f" | tendência vs {resumo['tendencia_vs']}" if resumo.get('tendencia_vs') else ""), file=sys.stderr)
@@ -583,6 +645,8 @@ def _cmd_filtrar(args):
             ok = ok and args.area.lower() in (r.get("area", "")).lower()
         if args.tema:
             ok = ok and args.tema.lower() in (r.get("tema", "") + " " + r.get("assunto", "")).lower()
+        if getattr(args, "subtema", None):
+            ok = ok and args.subtema.lower() in (r.get("subtema", "")).lower()
         if args.camara:
             ok = ok and args.camara.lower() in (r.get("orgao", "")).lower()
         if args.texto:
@@ -598,8 +662,9 @@ def _cmd_filtrar(args):
     else:
         print(f"{len(sel)} acórdão(s):\n")
         for r in sel:
+            sub = f"  · {r['subtema']}" if r.get("subtema") else ""
             print(f"- {r['numero']}  [{r.get('classe_curta', r.get('classe',''))}] "
-                  f"{r.get('tema') or r.get('assunto')}")
+                  f"{r.get('tema') or r.get('assunto')}{sub}")
             print(f"    {r.get('orgao','')} · Rel. {r.get('relator','')} · julg. {r.get('data_julgamento','')}")
             print(f"    PDF: {r.get('url_pdf','')}")
     print(f"\n({len(sel)} de {len(rows)})", file=sys.stderr)
@@ -633,6 +698,7 @@ def main():
     a.add_argument("--inicio", required=True, help="Janela início dd/mm/aaaa")
     a.add_argument("--fim", required=True, help="Janela fim dd/mm/aaaa")
     a.add_argument("--gerado-em", help="Carimbo de geração (default: agora)")
+    a.add_argument("--taxonomia", help="Caminho do taxonomia.json (p/ os destaques por subtema)")
     a.set_defaults(func=_cmd_agregar)
 
     f = sub.add_parser("filtrar", help="Drill-down: lista acórdãos de um tema/classe/câmara")
@@ -640,6 +706,7 @@ def main():
     f.add_argument("--classe", help="Filtra por classe (substring, ex.: 'Mandado de Segurança')")
     f.add_argument("--area", help="Filtra por área/matéria (substring, ex.: 'Sucessões')")
     f.add_argument("--tema", help="Filtra por tema/assunto (substring, ex.: 'testamento')")
+    f.add_argument("--subtema", help="Filtra por subtema lido na ementa (substring, ex.: 'Consignado')")
     f.add_argument("--camara", help="Filtra por câmara (substring, ex.: '3ª')")
     f.add_argument("--texto", help="Filtra por termo na ementa (substring)")
     f.add_argument("--formato", choices=["lista", "csv"], default="lista")
