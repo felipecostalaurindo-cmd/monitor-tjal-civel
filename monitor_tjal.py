@@ -223,7 +223,17 @@ def _parse_pagina(html_pagina, orgao_codigo, orgao_nome, classes_conhecidas):
     return linhas
 
 
-def coletar(dt_ini, dt_fim, orgaos, classes_conhecidas, pausa=0.5, verbose=True):
+def _data(d):
+    """dd/mm/aaaa -> tupla comparável (aaaa, mm, dd); '' -> None."""
+    try:
+        dd, mm, yy = d.split("/")
+        return (int(yy), int(mm), int(dd))
+    except Exception:
+        return None
+
+
+def coletar(dt_ini, dt_fim, orgaos, classes_conhecidas, pausa=0.5, verbose=True,
+            filtrar_julgamento=True):
     todas = []
     for cod in orgaos:
         nome = ORGAOS_CIVEIS.get(cod) or ORGAOS_EXEC_FISCAL.get(cod, cod)
@@ -241,6 +251,17 @@ def coletar(dt_ini, dt_fim, orgaos, classes_conhecidas, pausa=0.5, verbose=True)
             todas.extend(linhas)
             if verbose and p % 10 == 0:
                 print(f"  ... pág {p}/{n_pag}", file=sys.stderr)
+    if filtrar_julgamento:
+        # A busca do cjsg deixa passar acórdãos julgados fora da janela (julgados antes,
+        # apenas publicados agora). Mantém só os JULGADOS dentro de [dt_ini, dt_fim].
+        ini, fim = _data(dt_ini), _data(dt_fim)
+        antes = len(todas)
+        todas = [r for r in todas
+                 if (_data(r["data_julgamento"]) is None) or (ini and fim and ini <= _data(r["data_julgamento"]) <= fim)]
+        descartados = antes - len(todas)
+        if verbose and descartados:
+            print(f"[filtro] {descartados} acórdãos julgados fora da janela descartados "
+                  f"(publicados agora, julgados antes) — restam {len(todas)}", file=sys.stderr)
     return todas
 
 
