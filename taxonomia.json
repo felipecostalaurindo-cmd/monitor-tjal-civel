@@ -1,5 +1,5 @@
 {
-  "_doc": "Taxonomia do Monitor Câmaras Cíveis TJ/AL. 'area_keywords' é ORDENADO (1º match vence); cada item é [area, [palavras-chave em minúsculo]]. O match é feito 1º sobre o ASSUNTO do CNJ, depois sobre a EMENTA. 'classe_norm' são rótulos curtos especiais (fora isso, remove-se o sufixo ' Cível'). 'tema_merge' funde assuntos sinônimos num tema canônico (substring minúscula -> rótulo). 'subtemas_ementa' recorta uma ÁREA em sub-blocos lidos na EMENTA INTEIRA (assunto + ementa) — ORDENADO, 1º match vence; serve para destacar produtos que a etiqueta CNJ esconde (ex.: consignado some dentro de 'Contratos Bancários'). Vira a coluna 'subtema' no classificado e o bloco 'Destaque' no Slack/resumo. Arquivo cresce com o uso: o modelo (Sonnet) acrescenta mapeamentos novos do resíduo.",
+  "_doc": "Taxonomia do Monitor Câmaras Cíveis TJ/AL. 'area_keywords' é ORDENADO (1º match vence); cada item é [area, [palavras-chave em minúsculo]]. O match é feito 1º sobre o ASSUNTO do CNJ, depois sobre a EMENTA. 'classe_norm' são rótulos curtos especiais (fora isso, remove-se o sufixo ' Cível'). 'tema_merge' funde assuntos sinônimos num tema canônico (substring minúscula -> rótulo). 'subtemas_ementa' recorta uma ÁREA em sub-blocos lidos na EMENTA INTEIRA (assunto + ementa) — ORDENADO, 1º match vence; serve para destacar produtos que a etiqueta CNJ esconde (ex.: consignado some dentro de 'Contratos Bancários'). Vira a coluna 'subtema' no classificado e o bloco 'Destaque' no Slack/resumo. 'incidentes_processuais' é um eixo TRANSVERSAL e MULTIVALORADO (um acórdão pode ter vários; NÃO soma 100%): cada item é [rótulo, [palavras-chave]], casado sobre o NÚCLEO do litígio (assunto + CASO EM EXAME + QUESTÃO EM DISCUSSÃO, excluindo razões/dispositivo p/ não contar incidente só mencionado no resultado). Vira a coluna 'incidentes' e o bloco 'Pulso processual'. Arquivo cresce com o uso: o modelo (Sonnet) acrescenta mapeamentos novos do resíduo.",
 
   "classe_norm": {
     "Apelação / Remessa Necessária": "Apelação/Remessa",
@@ -39,6 +39,23 @@
       ["Cédula / contrato de crédito bancário", ["cédula de crédito", "cedula de credito", "contrato bancário", "contrato bancario", "contratos bancários", "contratos bancarios", "abertura de crédito", "abertura de credito", "cheque especial", "capital de giro", "financiamento", "empréstimo", "emprestimo", "mútuo", "mutuo", "confissão de dívida", "confissao de divida"]]
     ]
   },
+
+  "incidentes_processuais": [
+    ["Tutela provisória / urgência", ["tutela provisória", "tutela provisoria", "tutela de urgência", "tutela de urgencia", "tutela antecipada", "antecipação de tutela", "antecipacao de tutela", "tutela cautelar", "tutela de evidência", "tutela de evidencia", "liminar", "medida liminar", "efeito suspensivo"]],
+    ["Cumprimento de sentença", ["cumprimento de sentença", "cumprimento de sentenca", "cumprimento definitivo", "cumprimento provisório", "cumprimento provisorio", "impugnação ao cumprimento", "impugnacao ao cumprimento"]],
+    ["Execução de título extrajudicial", ["execução de título", "execucao de titulo", "título executivo extrajudicial", "titulo executivo extrajudicial", "embargos à execução", "embargos a execucao", "embargos do devedor", "ação de execução", "acao de execucao", "exceção de pré-executividade", "excecao de pre-executividade"]],
+    ["Penhora / constrição", ["penhora", "constrição", "constricao", "indisponibilidade de bens", "bloqueio de valores", "sisbajud", "bacenjud", "impenhorabilidade", "avaliação de bens", "avaliacao de bens", "adjudicação", "adjudicacao"]],
+    ["Honorários / sucumbência", ["honorários advocatícios", "honorarios advocaticios", "honorários sucumbenciais", "honorarios sucumbenciais", "honorários de sucumbência", "honorarios de sucumbencia", "verba honorária", "verba honoraria", "sucumbência", "sucumbencia", "honorários recursais", "honorarios recursais"]],
+    ["Gratuidade da justiça", ["gratuidade", "justiça gratuita", "justica gratuita", "assistência judiciária", "assistencia judiciaria", "hipossuficiência", "hipossuficiencia", "benefício da justiça", "beneficio da justica"]],
+    ["Competência / conflito", ["competência", "competencia", "incompetência", "incompetencia", "conflito de competência", "conflito de competencia", "conflito negativo", "conflito positivo", "foro competente", "declínio de competência", "declinio de competencia"]],
+    ["Prescrição / decadência", ["prescrição", "prescricao", "decadência", "decadencia", "prazo prescricional", "pretensão prescrita", "pretensao prescrita"]],
+    ["Nulidade / cerceamento", ["nulidade", "cerceamento de defesa", "cerceamento do direito", "julgamento extra petita", "extra petita", "ultra petita", "citra petita", "infra petita", "negativa de prestação jurisdicional", "negativa de prestacao jurisdicional", "vício de fundamentação", "vicio de fundamentacao", "ausência de fundamentação", "ausencia de fundamentacao"]],
+    ["Produção de prova / instrução", ["produção de prova", "producao de prova", "prova pericial", "perícia", "pericia", "julgamento antecipado", "reabertura da instrução", "reabertura da instrucao", "ônus da prova", "onus da prova", "inversão do ônus", "inversao do onus", "cerceamento probatório", "cerceamento probatorio"]],
+    ["Astreintes / multa", ["astreinte", "multa cominatória", "multa cominatoria", "multa diária", "multa diaria", "multa por descumprimento"]],
+    ["Legitimidade / interesse", ["ilegitimidade", "legitimidade passiva", "legitimidade ativa", "interesse processual", "interesse recursal", "interesse de agir", "carência de ação", "carencia de acao", "condições da ação", "condicoes da acao"]],
+    ["Desconsideração da PJ", ["desconsideração da personalidade", "desconsideracao da personalidade", "incidente de desconsideração", "incidente de desconsideracao"]],
+    ["Litigância de má-fé", ["litigância de má-fé", "litigancia de ma-fe", "má-fé processual", "ma-fe processual"]]
+  ],
 
   "tema_merge": {
     "inscrição indevida": "Negativação indevida",

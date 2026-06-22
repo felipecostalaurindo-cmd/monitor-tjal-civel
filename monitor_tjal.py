@@ -319,7 +319,7 @@ def _cmd_coletar(args):
 # ----------------------------------------------------------------------------- #
 import json
 
-CAMPOS_CLASS = CAMPOS + ["classe_curta", "area", "tema", "subtema", "precisa_llm"]
+CAMPOS_CLASS = CAMPOS + ["classe_curta", "area", "tema", "subtema", "incidentes", "precisa_llm"]
 
 
 def carregar_taxonomia(caminho=None):
@@ -367,6 +367,36 @@ def _achar_subtema(area, assunto, ementa, tax):
     return "Outros"
 
 
+def _nucleo_ementa(ementa):
+    """Trecho que ENUNCIA o litígio (CASO EM EXAME + QUESTÃO EM DISCUSSÃO), cortando
+    fora RAZÕES DE DECIDIR / TESE / DISPOSITIVO — onde o incidente costuma aparecer só
+    como consequência (ex.: 'condeno em honorários'). Formato CNJ novo (100% têm
+    'CASO EM EXAME'). Fallback: ementa inteira se a estrutura não for encontrada."""
+    if not ementa:
+        return ""
+    mi = re.search(r"caso\s+em\s+exame", ementa, re.I)
+    ini = mi.start() if mi else 0
+    mf = re.search(r"raz[õo]es\s+de\s+decidir|tese\s+de\s+julgamento|\bdispositivo\b",
+                   ementa[ini:], re.I)
+    fim = ini + mf.start() if mf else len(ementa)
+    nucleo = ementa[ini:fim].strip()
+    return nucleo if len(nucleo) >= 30 else ementa
+
+
+def _achar_incidentes(assunto, ementa, tax):
+    """Eixo TRANSVERSAL e MULTIVALORADO: devolve TODOS os incidentes processuais que
+    casam no núcleo do litígio (assunto + CASO/QUESTÃO), juntados por '|'. '' se nenhum."""
+    defs = tax.get("incidentes_processuais", [])
+    if not defs:
+        return ""
+    t = (assunto + " " + _nucleo_ementa(ementa)).lower()
+    achados = []
+    for label, kws in defs:
+        if any(kw in t for kw in kws):
+            achados.append(label)
+    return "|".join(achados)
+
+
 def classificar_linha(row, tax):
     classe_curta = _classe_curta(row.get("classe", ""), tax)
     assunto = row.get("assunto", "")
@@ -375,8 +405,10 @@ def classificar_linha(row, tax):
     tema = _tema(assunto, tax) if assunto else ""
     # subtema: recorte fino lido na ementa inteira (só p/ áreas com subtemas_ementa)
     subtema = _achar_subtema(area, assunto, row.get("ementa", ""), tax) if area else ""
+    # incidentes: eixo transversal lido no núcleo do litígio (independe da área)
+    incidentes = _achar_incidentes(assunto, row.get("ementa", ""), tax)
     precisa_llm = "1" if (not area or not tema) else ""
-    return classe_curta, area, tema, subtema, precisa_llm
+    return classe_curta, area, tema, subtema, incidentes, precisa_llm
 
 
 def _cmd_classificar(args):
@@ -384,8 +416,9 @@ def _cmd_classificar(args):
     rows = list(csv.DictReader(open(args.inp, encoding="utf-8")))
     n_llm = 0
     for r in rows:
-        cc, area, tema, subtema, precisa = classificar_linha(r, tax)
-        r["classe_curta"], r["area"], r["tema"], r["subtema"], r["precisa_llm"] = cc, area, tema, subtema, precisa
+        cc, area, tema, subtema, incidentes, precisa = classificar_linha(r, tax)
+        (r["classe_curta"], r["area"], r["tema"], r["subtema"],
+         r["incidentes"], r["precisa_llm"]) = cc, area, tema, subtema, incidentes, precisa
         if precisa:
             n_llm += 1
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
@@ -427,30 +460,43 @@ def _ordena_camaras(nomes):
 
 
 def _carregar_tendencia(base_dir, rotulo_atual):
-    """Acha o registro datado anterior mais recente e devolve (rotulo, pct por área, pct por subtema)."""
+    """Registro datado anterior mais recente -> (rotulo, pct por área, pct por subtema, pct por incidente)."""
     if not base_dir or not os.path.isdir(base_dir):
-        return None, None, None
+        return None, None, None, None
     pat = re.compile(r"^\d{4}-\d{2}-\d{2}$")
     cands = sorted([d for d in os.listdir(base_dir)
                     if pat.match(d) and d != rotulo_atual
                     and os.path.isfile(os.path.join(base_dir, d, "resumo.json"))])
     if not cands:
-        return None, None, None
+        return None, None, None, None
     anterior = cands[-1]
     try:
         prev = json.load(open(os.path.join(base_dir, anterior, "resumo.json"), encoding="utf-8"))
     except Exception:
-        return None, None, None
+        return None, None, None, None
     geral = {i["rotulo"]: i["pct"] for i in prev.get("geral", {}).get("areas", [])}
     destaques = {d["area"]: {i["rotulo"]: i["pct"] for i in d.get("subtemas", [])}
                  for d in prev.get("destaques", [])}
-    return anterior, geral, destaques
+    incidentes = {i["rotulo"]: i["pct"] for i in prev.get("incidentes_proc", [])}
+    return anterior, geral, destaques, incidentes
 
 
 def _camara(r):
     """Câmara canônica a partir do código do órgão buscado (agrupamento determinístico)."""
     cod = r.get("orgao_codigo", "")
     return ORGAOS_CIVEIS.get(cod) or ORGAOS_EXEC_FISCAL.get(cod) or (r.get("orgao") or "—")
+
+
+def _incidencia(rows):
+    """Eixo transversal: % de acórdãos em que cada incidente processual aparece.
+    MULTIVALORADO — um acórdão conta em vários; NÃO soma 100%. Ordenado por frequência."""
+    n = len(rows)
+    cnt = collections.Counter()
+    for r in rows:
+        for lab in (r.get("incidentes") or "").split("|"):
+            if lab:
+                cnt[lab] += 1
+    return [{"rotulo": k, "n": v, "pct": round(100.0 * v / n, 1)} for k, v in cnt.most_common()]
 
 
 def _destaques(rows, tax):
@@ -481,6 +527,7 @@ def agregar(rows, rotulo, janela, base_dir=None, gerado_em=None, tax=None):
             "areas": _dist(sub, "area"),
             "classes": _dist(sub, "classe_curta"),
             "temas": _dist(sub, "tema", top=15),
+            "incidentes": _incidencia(sub),
         }
     resumo = {
         "rotulo": rotulo,
@@ -495,10 +542,11 @@ def agregar(rows, rotulo, janela, base_dir=None, gerado_em=None, tax=None):
             "temas": _dist(rows, "tema", top=20),
         },
         "destaques": _destaques(rows, tax) if tax else [],
+        "incidentes_proc": _incidencia(rows),
     }
-    anterior, prev_geral, prev_destaques = _carregar_tendencia(base_dir, rotulo)
+    anterior, prev_geral, prev_destaques, prev_incidentes = _carregar_tendencia(base_dir, rotulo)
     resumo["tendencia_vs"] = anterior
-    return resumo, prev_geral, prev_destaques
+    return resumo, prev_geral, prev_destaques, prev_incidentes
 
 
 def _tabela_txt(itens, base_label="matéria"):
@@ -517,7 +565,7 @@ def _delta_pp(pct, prev_map, rotulo):
     return ""
 
 
-def montar_slack(resumo, prev_geral=None, prev_destaques=None):
+def montar_slack(resumo, prev_geral=None, prev_destaques=None, prev_incidentes=None):
     j = resumo["janela"]
     out = []
     out.append(f"*Monitor — Câmaras Cíveis do TJ/AL*")
@@ -539,6 +587,14 @@ def montar_slack(resumo, prev_geral=None, prev_destaques=None):
         for it in d["subtemas"]:
             sl.append(f"{it['pct']:>5.1f}  {it['n']:>4}  {it['rotulo']}{_delta_pp(it['pct'], prev, it['rotulo'])}")
         out.append("```\n" + "\n".join(sl) + "\n```")
+    # Pulso processual: incidentes transversais (lidos na QUESTÃO EM DISCUSSÃO)
+    inc = resumo.get("incidentes_proc") or []
+    if inc:
+        out.append("\n*Pulso processual — incidentes*  (% dos acórdãos; um pode ter vários, não soma 100%)")
+        il = [f"{'%':>5}  {'n':>5}  incidente (lido na questão em discussão)"]
+        for it in inc:
+            il.append(f"{it['pct']:>5.1f}  {_milhar(it['n']):>5}  {it['rotulo']}{_delta_pp(it['pct'], prev_incidentes, it['rotulo'])}")
+        out.append("```\n" + "\n".join(il) + "\n```")
     # Tabela completa por câmara
     for cam in resumo["orgaos"]:
         c = resumo["por_camara"][cam]
@@ -554,7 +610,7 @@ def _delta_md(pct, prev_map, rotulo):
     return ""
 
 
-def montar_md(resumo, prev_geral=None, prev_destaques=None):
+def montar_md(resumo, prev_geral=None, prev_destaques=None, prev_incidentes=None):
     j = resumo["janela"]
     md = [f"# Monitor Câmaras Cíveis TJ/AL — {resumo['rotulo']}", "",
           f"- **Janela:** {j['inicio']} a {j['fim']} (por data de julgamento)",
@@ -572,12 +628,26 @@ def montar_md(resumo, prev_geral=None, prev_destaques=None):
                "", "| % | n | recorte (lido na ementa) | Δ p.p. |", "|--:|--:|---|--:|"]
         for it in d["subtemas"]:
             md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} | {_delta_md(it['pct'], prev, it['rotulo'])} |")
+    # Pulso processual: incidentes transversais (geral + por câmara)
+    inc = resumo.get("incidentes_proc") or []
+    if inc:
+        md += ["", "## Pulso processual — incidentes (transversal)",
+               "", "*% dos acórdãos; um acórdão pode ter vários — não soma 100%. Lido na questão em discussão.*",
+               "", "| % | n | incidente | Δ p.p. |", "|--:|--:|---|--:|"]
+        for it in inc:
+            md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} | {_delta_md(it['pct'], prev_incidentes, it['rotulo'])} |")
     md += ["", "## Por câmara — matéria"]
     for cam in resumo["orgaos"]:
         c = resumo["por_camara"][cam]
         md += ["", f"### {cam} — {_milhar(c['total'])} acórdãos", "", "| % | n | matéria |", "|--:|--:|---|"]
         for it in c["areas"]:
             md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} |")
+        ci = c.get("incidentes") or []
+        if ci:
+            md += ["", "_incidentes processuais (% dos acórdãos da câmara):_",
+                   "", "| % | n | incidente |", "|--:|--:|---|"]
+            for it in ci[:10]:
+                md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} |")
     md += ["", "## Recorte por classe processual (geral)", "", "| % | n | classe |", "|--:|--:|---|"]
     for it in resumo["geral"]["classes"]:
         md.append(f"| {it['pct']:.1f} | {it['n']} | {it['rotulo']} |")
@@ -589,13 +659,15 @@ def _cmd_agregar(args):
     tax = carregar_taxonomia(getattr(args, "taxonomia", None))
     janela = {"inicio": args.inicio, "fim": args.fim, "criterio": "data_julgamento"}
     base_dir = args.base_dir or os.path.dirname(os.path.abspath(args.saida_dir))
-    resumo, prev_geral, prev_destaques = agregar(rows, args.rotulo, janela, base_dir=base_dir,
-                                                 gerado_em=args.gerado_em, tax=tax)
+    resumo, prev_geral, prev_destaques, prev_incidentes = agregar(
+        rows, args.rotulo, janela, base_dir=base_dir, gerado_em=args.gerado_em, tax=tax)
     os.makedirs(args.saida_dir, exist_ok=True)
     json.dump(resumo, open(os.path.join(args.saida_dir, "resumo.json"), "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
-    open(os.path.join(args.saida_dir, "resumo.md"), "w", encoding="utf-8").write(montar_md(resumo, prev_geral, prev_destaques))
-    open(os.path.join(args.saida_dir, "slack.txt"), "w", encoding="utf-8").write(montar_slack(resumo, prev_geral, prev_destaques))
+    open(os.path.join(args.saida_dir, "resumo.md"), "w", encoding="utf-8").write(
+        montar_md(resumo, prev_geral, prev_destaques, prev_incidentes))
+    open(os.path.join(args.saida_dir, "slack.txt"), "w", encoding="utf-8").write(
+        montar_slack(resumo, prev_geral, prev_destaques, prev_incidentes))
     print(f"OK: resumo.json / resumo.md / slack.txt -> {args.saida_dir}", file=sys.stderr)
     print(f"   total={resumo['total']} | órgãos={len(resumo['orgaos'])}"
           + (f" | tendência vs {resumo['tendencia_vs']}" if resumo.get('tendencia_vs') else ""), file=sys.stderr)
@@ -647,6 +719,8 @@ def _cmd_filtrar(args):
             ok = ok and args.tema.lower() in (r.get("tema", "") + " " + r.get("assunto", "")).lower()
         if getattr(args, "subtema", None):
             ok = ok and args.subtema.lower() in (r.get("subtema", "")).lower()
+        if getattr(args, "incidente", None):
+            ok = ok and args.incidente.lower() in (r.get("incidentes", "")).lower()
         if args.camara:
             ok = ok and args.camara.lower() in (r.get("orgao", "")).lower()
         if args.texto:
@@ -665,6 +739,8 @@ def _cmd_filtrar(args):
             sub = f"  · {r['subtema']}" if r.get("subtema") else ""
             print(f"- {r['numero']}  [{r.get('classe_curta', r.get('classe',''))}] "
                   f"{r.get('tema') or r.get('assunto')}{sub}")
+            if r.get("incidentes"):
+                print(f"    incidentes: {r['incidentes'].replace('|', ', ')}")
             print(f"    {r.get('orgao','')} · Rel. {r.get('relator','')} · julg. {r.get('data_julgamento','')}")
             print(f"    PDF: {r.get('url_pdf','')}")
     print(f"\n({len(sel)} de {len(rows)})", file=sys.stderr)
@@ -707,6 +783,7 @@ def main():
     f.add_argument("--area", help="Filtra por área/matéria (substring, ex.: 'Sucessões')")
     f.add_argument("--tema", help="Filtra por tema/assunto (substring, ex.: 'testamento')")
     f.add_argument("--subtema", help="Filtra por subtema lido na ementa (substring, ex.: 'Consignado')")
+    f.add_argument("--incidente", help="Filtra por incidente processual (substring, ex.: 'Tutela', 'Honorários')")
     f.add_argument("--camara", help="Filtra por câmara (substring, ex.: '3ª')")
     f.add_argument("--texto", help="Filtra por termo na ementa (substring)")
     f.add_argument("--formato", choices=["lista", "csv"], default="lista")
