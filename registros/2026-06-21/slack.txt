@@ -1,0 +1,113 @@
+*Monitor — Câmaras Cíveis do TJ/AL*
+Julgados de *15/06/2026* a *21/06/2026* (por data de julgamento)
+Total: *2.205* acórdãos · 5 órgãos
+
+*Panorama geral — por matéria*
+```
+    %      n  matéria
+ 25.1    554  Bancário e Financeiro
+ 18.0    398  Contratos
+ 11.7    257  Responsabilidade Civil
+  9.7    213  Saúde
+  9.6    211  Processual Civil
+  7.9    175  Consumidor
+  5.7    126  Servidor Público e Administrativo
+  5.7    125  Tributário
+  2.2     49  Usucapião e Direitos Reais
+  1.0     21  Locação e Imóveis
+  0.9     19  Sucessões
+  0.7     16  Empresarial
+  0.7     15  Família
+  0.5     12  Previdenciário
+  0.5     12  Plano de Saúde
+  0.0      1  Ambiental
+  0.0      1  Registros Públicos
+```
+
+*1ª Câmara Cível* — 464 acórdãos
+```
+    %     n  matéria
+ 26.1   121  Bancário e Financeiro
+ 20.7    96  Contratos
+ 12.1    56  Responsabilidade Civil
+ 10.8    50  Consumidor
+  9.5    44  Saúde
+  6.2    29  Processual Civil
+  5.4    25  Servidor Público e Administrativo
+  3.0    14  Tributário
+  2.6    12  Usucapião e Direitos Reais
+  1.1     5  Locação e Imóveis
+  0.9     4  Empresarial
+  0.4     2  Previdenciário
+  0.4     2  Família
+  0.4     2  Plano de Saúde
+  0.4     2  Sucessões
+```
+
+*2ª Câmara Cível* — 340 acórdãos
+```
+    %     n  matéria
+ 30.3   103  Bancário e Financeiro
+ 17.1    58  Contratos
+ 11.5    39  Processual Civil
+  8.5    29  Responsabilidade Civil
+  7.9    27  Consumidor
+  7.6    26  Servidor Público e Administrativo
+  6.2    21  Saúde
+  5.9    20  Tributário
+  1.8     6  Usucapião e Direitos Reais
+  1.8     6  Família
+  0.6     2  Sucessões
+  0.3     1  Empresarial
+  0.3     1  Locação e Imóveis
+  0.3     1  Previdenciário
+```
+
+*3ª Câmara Cível* — 688 acórdãos
+```
+    %     n  matéria
+ 26.9   185  Bancário e Financeiro
+ 15.7   108  Contratos
+ 14.7   101  Responsabilidade Civil
+ 11.5    79  Processual Civil
+  8.6    59  Saúde
+  7.4    51  Consumidor
+  4.9    34  Tributário
+  3.6    25  Servidor Público e Administrativo
+  2.0    14  Usucapião e Direitos Reais
+  1.0     7  Empresarial
+  1.0     7  Sucessões
+  1.0     7  Locação e Imóveis
+  0.7     5  Plano de Saúde
+  0.4     3  Família
+  0.1     1  Previdenciário
+  0.1     1  Ambiental
+  0.1     1  Registros Públicos
+```
+
+*4ª Câmara Cível* — 711 acórdãos
+```
+    %     n  matéria
+ 20.4   145  Bancário e Financeiro
+ 19.1   136  Contratos
+ 12.5    89  Saúde
+ 10.0    71  Responsabilidade Civil
+  8.9    63  Processual Civil
+  8.0    57  Tributário
+  7.0    50  Servidor Público e Administrativo
+  6.6    47  Consumidor
+  2.4    17  Usucapião e Direitos Reais
+  1.1     8  Locação e Imóveis
+  1.1     8  Sucessões
+  1.0     7  Previdenciário
+  0.7     5  Plano de Saúde
+  0.6     4  Família
+  0.6     4  Empresarial
+```
+
+*Seção Especializada Cível* — 2 acórdãos
+```
+    %     n  matéria
+ 50.0     1  Previdenciário
+ 50.0     1  Processual Civil
+```

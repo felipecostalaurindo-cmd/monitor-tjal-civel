@@ -729,6 +729,8 @@ def _cmd_filtrar(args):
             ok = ok and args.incidente.lower() in (r.get("incidentes", "")).lower()
         if args.camara:
             ok = ok and args.camara.lower() in (r.get("orgao", "")).lower()
+        if getattr(args, "relator", None):
+            ok = ok and args.relator.lower() in (r.get("relator", "")).lower()
         if args.texto:
             ok = ok and args.texto.lower() in (r.get("ementa", "")).lower()
         return ok
@@ -749,7 +751,48 @@ def _cmd_filtrar(args):
                 print(f"    incidentes: {r['incidentes'].replace('|', ', ')}")
             print(f"    {r.get('orgao','')} · Rel. {r.get('relator','')} · julg. {r.get('data_julgamento','')}")
             print(f"    PDF: {r.get('url_pdf','')}")
+            if getattr(args, "com_ementa", False):
+                em = " ".join((r.get("ementa") or "").split())
+                if em:
+                    lim = getattr(args, "max_ementa", 1200)
+                    print(f"    ementa: {em[:lim]}{'…' if len(em) > lim else ''}")
     print(f"\n({len(sel)} de {len(rows)})", file=sys.stderr)
+
+
+def _cmd_publicar(args):
+    """Copia o registro datado p/ o clone local do repo (registros/<rotulo>/) e,
+    com --push, commita e envia. O CSV do cível já é enxuto (ementa inline, sem
+    coluna de inteiro teor), então vai copiado como está."""
+    import shutil
+    import subprocess
+    destino = os.path.join(args.repo_dir, "registros", args.rotulo)
+    os.makedirs(destino, exist_ok=True)
+    copiados = []
+    for nome in ("classificado.csv", "resumo.json", "resumo.md", "slack.txt"):
+        src = os.path.join(args.saida_dir, nome)
+        if os.path.exists(src):
+            shutil.copy2(src, os.path.join(destino, nome))
+            copiados.append(nome)
+    print(f"OK: {len(copiados)} arquivo(s) -> {destino} ({', '.join(copiados)})", file=sys.stderr)
+    if not args.push:
+        return
+
+    def git(*a):
+        return subprocess.run(["git", "-C", args.repo_dir, *a], capture_output=True, text=True)
+    git("add", os.path.join("registros", args.rotulo))
+    r = git("commit", "-m", f"registros: rodada {args.rotulo}")
+    saida = r.stdout + r.stderr
+    if r.returncode != 0 and "nothing to commit" in saida:
+        print("git: nada a commitar (registro já publicado)", file=sys.stderr)
+        return
+    if r.returncode != 0:
+        print(f"git commit falhou: {saida.strip()}", file=sys.stderr)
+        return
+    rp = git("push")
+    if rp.returncode != 0:
+        print(f"git push falhou: {(rp.stdout + rp.stderr).strip()}", file=sys.stderr)
+    else:
+        print(f"git: publicado e enviado ({args.rotulo})", file=sys.stderr)
 
 
 def main():
@@ -792,8 +835,19 @@ def main():
     f.add_argument("--incidente", help="Filtra por incidente processual (substring, ex.: 'Tutela', 'Honorários')")
     f.add_argument("--camara", help="Filtra por câmara (substring, ex.: '3ª')")
     f.add_argument("--texto", help="Filtra por termo na ementa (substring)")
+    f.add_argument("--relator", help="Filtra por relator(a) (substring)")
+    f.add_argument("--com-ementa", action="store_true",
+                   help="Inclui o texto da ementa na saída (use só quando pedirem ementas)")
+    f.add_argument("--max-ementa", type=int, default=1200, help="Corta a ementa em N caracteres (default 1200)")
     f.add_argument("--formato", choices=["lista", "csv"], default="lista")
     f.set_defaults(func=_cmd_filtrar)
+
+    p = sub.add_parser("publicar", help="Copia o registro datado p/ o clone do repo (registros/<rotulo>/) e, com --push, commita e envia")
+    p.add_argument("--saida-dir", required=True, help="Pasta datada de origem (classificado.csv, resumo.json/md, slack.txt)")
+    p.add_argument("--rotulo", required=True, help="Rótulo da rodada (AAAA-MM-DD)")
+    p.add_argument("--repo-dir", required=True, help="Clone local do repo público")
+    p.add_argument("--push", action="store_true", help="git add/commit/push do registro")
+    p.set_defaults(func=_cmd_publicar)
 
     n = sub.add_parser("notificar", help="Posta a tabela (slack.txt) no canal via webhook")
     n.add_argument("--saida-dir", help="Pasta datada (lê slack.txt dela)")

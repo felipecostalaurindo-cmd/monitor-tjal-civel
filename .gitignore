@@ -1,3 +1,6 @@
+# segredos / config local (webhook do Slack)
 config.local.json
-*.csv
 __pycache__/
+# CSVs de trabalho na RAIZ (coleta bruta avulsa) — não versionar.
+# Os snapshots semanais em registros/<AAAA-MM-DD>/ SÃO versionados (drill-down).
+/*.csv

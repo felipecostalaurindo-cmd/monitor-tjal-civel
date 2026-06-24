@@ -1,0 +1,1088 @@
+{
+  "rotulo": "2026-06-21",
+  "gerado_em": "2026-06-22 00:34",
+  "janela": {
+    "inicio": "15/06/2026",
+    "fim": "21/06/2026",
+    "criterio": "data_julgamento"
+  },
+  "total": 2205,
+  "orgaos": [
+    "1ª Câmara Cível",
+    "2ª Câmara Cível",
+    "3ª Câmara Cível",
+    "4ª Câmara Cível",
+    "Seção Especializada Cível"
+  ],
+  "por_camara": {
+    "1ª Câmara Cível": {
+      "total": 464,
+      "areas": [
+        {
+          "rotulo": "Bancário e Financeiro",
+          "n": 121,
+          "pct": 26.1
+        },
+        {
+          "rotulo": "Contratos",
+          "n": 96,
+          "pct": 20.7
+        },
+        {
+          "rotulo": "Responsabilidade Civil",
+          "n": 56,
+          "pct": 12.1
+        },
+        {
+          "rotulo": "Consumidor",
+          "n": 50,
+          "pct": 10.8
+        },
+        {
+          "rotulo": "Saúde",
+          "n": 44,
+          "pct": 9.5
+        },
+        {
+          "rotulo": "Processual Civil",
+          "n": 29,
+          "pct": 6.2
+        },
+        {
+          "rotulo": "Servidor Público e Administrativo",
+          "n": 25,
+          "pct": 5.4
+        },
+        {
+          "rotulo": "Tributário",
+          "n": 14,
+          "pct": 3.0
+        },
+        {
+          "rotulo": "Usucapião e Direitos Reais",
+          "n": 12,
+          "pct": 2.6
+        },
+        {
+          "rotulo": "Locação e Imóveis",
+          "n": 5,
+          "pct": 1.1
+        },
+        {
+          "rotulo": "Empresarial",
+          "n": 4,
+          "pct": 0.9
+        },
+        {
+          "rotulo": "Previdenciário",
+          "n": 2,
+          "pct": 0.4
+        },
+        {
+          "rotulo": "Família",
+          "n": 2,
+          "pct": 0.4
+        },
+        {
+          "rotulo": "Plano de Saúde",
+          "n": 2,
+          "pct": 0.4
+        },
+        {
+          "rotulo": "Sucessões",
+          "n": 2,
+          "pct": 0.4
+        }
+      ],
+      "classes": [
+        {
+          "rotulo": "Apelação",
+          "n": 360,
+          "pct": 77.6
+        },
+        {
+          "rotulo": "Agravo de Instrumento",
+          "n": 82,
+          "pct": 17.7
+        },
+        {
+          "rotulo": "Embargos de Declaração",
+          "n": 18,
+          "pct": 3.9
+        },
+        {
+          "rotulo": "Agravo Interno",
+          "n": 2,
+          "pct": 0.4
+        },
+        {
+          "rotulo": "Remessa Necessária",
+          "n": 1,
+          "pct": 0.2
+        },
+        {
+          "rotulo": "Correição Parcial",
+          "n": 1,
+          "pct": 0.2
+        }
+      ],
+      "temas": [
+        {
+          "rotulo": "Contratos Bancários",
+          "n": 49,
+          "pct": 10.6
+        },
+        {
+          "rotulo": "Revisão de contrato",
+          "n": 34,
+          "pct": 7.3
+        },
+        {
+          "rotulo": "Obrigação de Fazer / Não Fazer",
+          "n": 29,
+          "pct": 6.2
+        },
+        {
+          "rotulo": "Perdas e Danos",
+          "n": 28,
+          "pct": 6.0
+        },
+        {
+          "rotulo": "Alienação Fiduciária",
+          "n": 24,
+          "pct": 5.2
+        },
+        {
+          "rotulo": "Negativação indevida",
+          "n": 23,
+          "pct": 5.0
+        },
+        {
+          "rotulo": "Indenização por Dano Material",
+          "n": 17,
+          "pct": 3.7
+        },
+        {
+          "rotulo": "Tratamento da Própria Saúde",
+          "n": 17,
+          "pct": 3.7
+        },
+        {
+          "rotulo": "Seguro",
+          "n": 14,
+          "pct": 3.0
+        },
+        {
+          "rotulo": "Cartão de Crédito",
+          "n": 12,
+          "pct": 2.6
+        },
+        {
+          "rotulo": "Defeito, nulidade ou anulação",
+          "n": 12,
+          "pct": 2.6
+        },
+        {
+          "rotulo": "Efeito Suspensivo / Impugnação / Embargos à Execução",
+          "n": 10,
+          "pct": 2.2
+        },
+        {
+          "rotulo": "Rescisão do contrato e devolução do dinheiro",
+          "n": 10,
+          "pct": 2.2
+        },
+        {
+          "rotulo": "Cédula de Crédito Bancário",
+          "n": 7,
+          "pct": 1.5
+        },
+        {
+          "rotulo": "Empréstimo consignado",
+          "n": 7,
+          "pct": 1.5
+        }
+      ]
+    },
+    "2ª Câmara Cível": {
+      "total": 340,
+      "areas": [
+        {
+          "rotulo": "Bancário e Financeiro",
+          "n": 103,
+          "pct": 30.3
+        },
+        {
+          "rotulo": "Contratos",
+          "n": 58,
+          "pct": 17.1
+        },
+        {
+          "rotulo": "Processual Civil",
+          "n": 39,
+          "pct": 11.5
+        },
+        {
+          "rotulo": "Responsabilidade Civil",
+          "n": 29,
+          "pct": 8.5
+        },
+        {
+          "rotulo": "Consumidor",
+          "n": 27,
+          "pct": 7.9
+        },
+        {
+          "rotulo": "Servidor Público e Administrativo",
+          "n": 26,
+          "pct": 7.6
+        },
+        {
+          "rotulo": "Saúde",
+          "n": 21,
+          "pct": 6.2
+        },
+        {
+          "rotulo": "Tributário",
+          "n": 20,
+          "pct": 5.9
+        },
+        {
+          "rotulo": "Usucapião e Direitos Reais",
+          "n": 6,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Família",
+          "n": 6,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Sucessões",
+          "n": 2,
+          "pct": 0.6
+        },
+        {
+          "rotulo": "Empresarial",
+          "n": 1,
+          "pct": 0.3
+        },
+        {
+          "rotulo": "Locação e Imóveis",
+          "n": 1,
+          "pct": 0.3
+        },
+        {
+          "rotulo": "Previdenciário",
+          "n": 1,
+          "pct": 0.3
+        }
+      ],
+      "classes": [
+        {
+          "rotulo": "Apelação",
+          "n": 168,
+          "pct": 49.4
+        },
+        {
+          "rotulo": "Embargos de Declaração",
+          "n": 108,
+          "pct": 31.8
+        },
+        {
+          "rotulo": "Agravo de Instrumento",
+          "n": 54,
+          "pct": 15.9
+        },
+        {
+          "rotulo": "Agravo Interno",
+          "n": 6,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Remessa Necessária",
+          "n": 3,
+          "pct": 0.9
+        },
+        {
+          "rotulo": "Habeas Corpus",
+          "n": 1,
+          "pct": 0.3
+        }
+      ],
+      "temas": [
+        {
+          "rotulo": "Contratos Bancários",
+          "n": 45,
+          "pct": 13.2
+        },
+        {
+          "rotulo": "Alienação Fiduciária",
+          "n": 27,
+          "pct": 7.9
+        },
+        {
+          "rotulo": "Defeito, nulidade ou anulação",
+          "n": 21,
+          "pct": 6.2
+        },
+        {
+          "rotulo": "Revisão de contrato",
+          "n": 19,
+          "pct": 5.6
+        },
+        {
+          "rotulo": "Obrigação de Fazer / Não Fazer",
+          "n": 15,
+          "pct": 4.4
+        },
+        {
+          "rotulo": "Negativação indevida",
+          "n": 12,
+          "pct": 3.5
+        },
+        {
+          "rotulo": "Perdas e Danos",
+          "n": 11,
+          "pct": 3.2
+        },
+        {
+          "rotulo": "Indenização por Dano Material",
+          "n": 11,
+          "pct": 3.2
+        },
+        {
+          "rotulo": "Seguro",
+          "n": 11,
+          "pct": 3.2
+        },
+        {
+          "rotulo": "Liminar",
+          "n": 7,
+          "pct": 2.1
+        },
+        {
+          "rotulo": "Cartão de Crédito",
+          "n": 6,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Rescisão do contrato e devolução do dinheiro",
+          "n": 6,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Descontos Indevidos",
+          "n": 5,
+          "pct": 1.5
+        },
+        {
+          "rotulo": "Tratamento da Própria Saúde",
+          "n": 5,
+          "pct": 1.5
+        },
+        {
+          "rotulo": "Honorários Advocatícios em Execução Contra a Fazenda Pública",
+          "n": 5,
+          "pct": 1.5
+        }
+      ]
+    },
+    "3ª Câmara Cível": {
+      "total": 688,
+      "areas": [
+        {
+          "rotulo": "Bancário e Financeiro",
+          "n": 185,
+          "pct": 26.9
+        },
+        {
+          "rotulo": "Contratos",
+          "n": 108,
+          "pct": 15.7
+        },
+        {
+          "rotulo": "Responsabilidade Civil",
+          "n": 101,
+          "pct": 14.7
+        },
+        {
+          "rotulo": "Processual Civil",
+          "n": 79,
+          "pct": 11.5
+        },
+        {
+          "rotulo": "Saúde",
+          "n": 59,
+          "pct": 8.6
+        },
+        {
+          "rotulo": "Consumidor",
+          "n": 51,
+          "pct": 7.4
+        },
+        {
+          "rotulo": "Tributário",
+          "n": 34,
+          "pct": 4.9
+        },
+        {
+          "rotulo": "Servidor Público e Administrativo",
+          "n": 25,
+          "pct": 3.6
+        },
+        {
+          "rotulo": "Usucapião e Direitos Reais",
+          "n": 14,
+          "pct": 2.0
+        },
+        {
+          "rotulo": "Empresarial",
+          "n": 7,
+          "pct": 1.0
+        },
+        {
+          "rotulo": "Sucessões",
+          "n": 7,
+          "pct": 1.0
+        },
+        {
+          "rotulo": "Locação e Imóveis",
+          "n": 7,
+          "pct": 1.0
+        },
+        {
+          "rotulo": "Plano de Saúde",
+          "n": 5,
+          "pct": 0.7
+        },
+        {
+          "rotulo": "Família",
+          "n": 3,
+          "pct": 0.4
+        },
+        {
+          "rotulo": "Previdenciário",
+          "n": 1,
+          "pct": 0.1
+        },
+        {
+          "rotulo": "Ambiental",
+          "n": 1,
+          "pct": 0.1
+        },
+        {
+          "rotulo": "Registros Públicos",
+          "n": 1,
+          "pct": 0.1
+        }
+      ],
+      "classes": [
+        {
+          "rotulo": "Apelação",
+          "n": 313,
+          "pct": 45.5
+        },
+        {
+          "rotulo": "Embargos de Declaração",
+          "n": 212,
+          "pct": 30.8
+        },
+        {
+          "rotulo": "Agravo de Instrumento",
+          "n": 136,
+          "pct": 19.8
+        },
+        {
+          "rotulo": "Agravo Interno",
+          "n": 12,
+          "pct": 1.7
+        },
+        {
+          "rotulo": "Conflito de Competência",
+          "n": 6,
+          "pct": 0.9
+        },
+        {
+          "rotulo": "Remessa Necessária",
+          "n": 6,
+          "pct": 0.9
+        },
+        {
+          "rotulo": "Apelação/Remessa",
+          "n": 3,
+          "pct": 0.4
+        }
+      ],
+      "temas": [
+        {
+          "rotulo": "Contratos Bancários",
+          "n": 87,
+          "pct": 12.6
+        },
+        {
+          "rotulo": "Perdas e Danos",
+          "n": 46,
+          "pct": 6.7
+        },
+        {
+          "rotulo": "Obrigação de Fazer / Não Fazer",
+          "n": 40,
+          "pct": 5.8
+        },
+        {
+          "rotulo": "Cédula de Crédito Bancário",
+          "n": 35,
+          "pct": 5.1
+        },
+        {
+          "rotulo": "Defeito, nulidade ou anulação",
+          "n": 33,
+          "pct": 4.8
+        },
+        {
+          "rotulo": "Indenização por Dano Material",
+          "n": 33,
+          "pct": 4.8
+        },
+        {
+          "rotulo": "Revisão de contrato",
+          "n": 30,
+          "pct": 4.4
+        },
+        {
+          "rotulo": "Negativação indevida",
+          "n": 25,
+          "pct": 3.6
+        },
+        {
+          "rotulo": "Cartão de Crédito",
+          "n": 20,
+          "pct": 2.9
+        },
+        {
+          "rotulo": "Tratamento da Própria Saúde",
+          "n": 19,
+          "pct": 2.8
+        },
+        {
+          "rotulo": "PASEP",
+          "n": 18,
+          "pct": 2.6
+        },
+        {
+          "rotulo": "Efeito Suspensivo / Impugnação / Embargos à Execução",
+          "n": 16,
+          "pct": 2.3
+        },
+        {
+          "rotulo": "Alienação Fiduciária",
+          "n": 16,
+          "pct": 2.3
+        },
+        {
+          "rotulo": "Rescisão do contrato e devolução do dinheiro",
+          "n": 12,
+          "pct": 1.7
+        },
+        {
+          "rotulo": "Liminar",
+          "n": 11,
+          "pct": 1.6
+        }
+      ]
+    },
+    "4ª Câmara Cível": {
+      "total": 711,
+      "areas": [
+        {
+          "rotulo": "Bancário e Financeiro",
+          "n": 145,
+          "pct": 20.4
+        },
+        {
+          "rotulo": "Contratos",
+          "n": 136,
+          "pct": 19.1
+        },
+        {
+          "rotulo": "Saúde",
+          "n": 89,
+          "pct": 12.5
+        },
+        {
+          "rotulo": "Responsabilidade Civil",
+          "n": 71,
+          "pct": 10.0
+        },
+        {
+          "rotulo": "Processual Civil",
+          "n": 63,
+          "pct": 8.9
+        },
+        {
+          "rotulo": "Tributário",
+          "n": 57,
+          "pct": 8.0
+        },
+        {
+          "rotulo": "Servidor Público e Administrativo",
+          "n": 50,
+          "pct": 7.0
+        },
+        {
+          "rotulo": "Consumidor",
+          "n": 47,
+          "pct": 6.6
+        },
+        {
+          "rotulo": "Usucapião e Direitos Reais",
+          "n": 17,
+          "pct": 2.4
+        },
+        {
+          "rotulo": "Locação e Imóveis",
+          "n": 8,
+          "pct": 1.1
+        },
+        {
+          "rotulo": "Sucessões",
+          "n": 8,
+          "pct": 1.1
+        },
+        {
+          "rotulo": "Previdenciário",
+          "n": 7,
+          "pct": 1.0
+        },
+        {
+          "rotulo": "Plano de Saúde",
+          "n": 5,
+          "pct": 0.7
+        },
+        {
+          "rotulo": "Família",
+          "n": 4,
+          "pct": 0.6
+        },
+        {
+          "rotulo": "Empresarial",
+          "n": 4,
+          "pct": 0.6
+        }
+      ],
+      "classes": [
+        {
+          "rotulo": "Apelação",
+          "n": 468,
+          "pct": 65.8
+        },
+        {
+          "rotulo": "Agravo de Instrumento",
+          "n": 161,
+          "pct": 22.6
+        },
+        {
+          "rotulo": "Embargos de Declaração",
+          "n": 48,
+          "pct": 6.8
+        },
+        {
+          "rotulo": "Agravo Interno",
+          "n": 14,
+          "pct": 2.0
+        },
+        {
+          "rotulo": "Remessa Necessária",
+          "n": 10,
+          "pct": 1.4
+        },
+        {
+          "rotulo": "Apelação/Remessa",
+          "n": 7,
+          "pct": 1.0
+        },
+        {
+          "rotulo": "Procedimento Comum",
+          "n": 1,
+          "pct": 0.1
+        },
+        {
+          "rotulo": "Pedido de Efeito Suspensivo à Apelação",
+          "n": 1,
+          "pct": 0.1
+        },
+        {
+          "rotulo": "Conflito de Competência",
+          "n": 1,
+          "pct": 0.1
+        }
+      ],
+      "temas": [
+        {
+          "rotulo": "Obrigação de Fazer / Não Fazer",
+          "n": 62,
+          "pct": 8.7
+        },
+        {
+          "rotulo": "Contratos Bancários",
+          "n": 55,
+          "pct": 7.7
+        },
+        {
+          "rotulo": "Tratamento da Própria Saúde",
+          "n": 39,
+          "pct": 5.5
+        },
+        {
+          "rotulo": "Perdas e Danos",
+          "n": 27,
+          "pct": 3.8
+        },
+        {
+          "rotulo": "Revisão de contrato",
+          "n": 27,
+          "pct": 3.8
+        },
+        {
+          "rotulo": "Cédula de Crédito Bancário",
+          "n": 27,
+          "pct": 3.8
+        },
+        {
+          "rotulo": "Alienação Fiduciária",
+          "n": 24,
+          "pct": 3.4
+        },
+        {
+          "rotulo": "Defeito, nulidade ou anulação",
+          "n": 23,
+          "pct": 3.2
+        },
+        {
+          "rotulo": "Seguro",
+          "n": 20,
+          "pct": 2.8
+        },
+        {
+          "rotulo": "Negativação indevida",
+          "n": 19,
+          "pct": 2.7
+        },
+        {
+          "rotulo": "Indenização por Dano Material",
+          "n": 19,
+          "pct": 2.7
+        },
+        {
+          "rotulo": "Liminar",
+          "n": 15,
+          "pct": 2.1
+        },
+        {
+          "rotulo": "Efeito Suspensivo / Impugnação / Embargos à Execução",
+          "n": 14,
+          "pct": 2.0
+        },
+        {
+          "rotulo": "Fornecimento de medicamentos",
+          "n": 13,
+          "pct": 1.8
+        },
+        {
+          "rotulo": "Rescisão do contrato e devolução do dinheiro",
+          "n": 12,
+          "pct": 1.7
+        }
+      ]
+    },
+    "Seção Especializada Cível": {
+      "total": 2,
+      "areas": [
+        {
+          "rotulo": "Previdenciário",
+          "n": 1,
+          "pct": 50.0
+        },
+        {
+          "rotulo": "Processual Civil",
+          "n": 1,
+          "pct": 50.0
+        }
+      ],
+      "classes": [
+        {
+          "rotulo": "Ação Rescisória",
+          "n": 2,
+          "pct": 100.0
+        }
+      ],
+      "temas": [
+        {
+          "rotulo": "Contribuição previdenciária (militar)",
+          "n": 1,
+          "pct": 50.0
+        },
+        {
+          "rotulo": "Litisconsórcio necessário",
+          "n": 1,
+          "pct": 50.0
+        }
+      ]
+    }
+  },
+  "geral": {
+    "areas": [
+      {
+        "rotulo": "Bancário e Financeiro",
+        "n": 554,
+        "pct": 25.1
+      },
+      {
+        "rotulo": "Contratos",
+        "n": 398,
+        "pct": 18.0
+      },
+      {
+        "rotulo": "Responsabilidade Civil",
+        "n": 257,
+        "pct": 11.7
+      },
+      {
+        "rotulo": "Saúde",
+        "n": 213,
+        "pct": 9.7
+      },
+      {
+        "rotulo": "Processual Civil",
+        "n": 211,
+        "pct": 9.6
+      },
+      {
+        "rotulo": "Consumidor",
+        "n": 175,
+        "pct": 7.9
+      },
+      {
+        "rotulo": "Servidor Público e Administrativo",
+        "n": 126,
+        "pct": 5.7
+      },
+      {
+        "rotulo": "Tributário",
+        "n": 125,
+        "pct": 5.7
+      },
+      {
+        "rotulo": "Usucapião e Direitos Reais",
+        "n": 49,
+        "pct": 2.2
+      },
+      {
+        "rotulo": "Locação e Imóveis",
+        "n": 21,
+        "pct": 1.0
+      },
+      {
+        "rotulo": "Sucessões",
+        "n": 19,
+        "pct": 0.9
+      },
+      {
+        "rotulo": "Empresarial",
+        "n": 16,
+        "pct": 0.7
+      },
+      {
+        "rotulo": "Família",
+        "n": 15,
+        "pct": 0.7
+      },
+      {
+        "rotulo": "Previdenciário",
+        "n": 12,
+        "pct": 0.5
+      },
+      {
+        "rotulo": "Plano de Saúde",
+        "n": 12,
+        "pct": 0.5
+      },
+      {
+        "rotulo": "Ambiental",
+        "n": 1,
+        "pct": 0.0
+      },
+      {
+        "rotulo": "Registros Públicos",
+        "n": 1,
+        "pct": 0.0
+      }
+    ],
+    "classes": [
+      {
+        "rotulo": "Apelação",
+        "n": 1309,
+        "pct": 59.4
+      },
+      {
+        "rotulo": "Agravo de Instrumento",
+        "n": 433,
+        "pct": 19.6
+      },
+      {
+        "rotulo": "Embargos de Declaração",
+        "n": 386,
+        "pct": 17.5
+      },
+      {
+        "rotulo": "Agravo Interno",
+        "n": 34,
+        "pct": 1.5
+      },
+      {
+        "rotulo": "Remessa Necessária",
+        "n": 20,
+        "pct": 0.9
+      },
+      {
+        "rotulo": "Apelação/Remessa",
+        "n": 10,
+        "pct": 0.5
+      },
+      {
+        "rotulo": "Conflito de Competência",
+        "n": 7,
+        "pct": 0.3
+      },
+      {
+        "rotulo": "Ação Rescisória",
+        "n": 2,
+        "pct": 0.1
+      },
+      {
+        "rotulo": "Correição Parcial",
+        "n": 1,
+        "pct": 0.0
+      },
+      {
+        "rotulo": "Habeas Corpus",
+        "n": 1,
+        "pct": 0.0
+      },
+      {
+        "rotulo": "Procedimento Comum",
+        "n": 1,
+        "pct": 0.0
+      },
+      {
+        "rotulo": "Pedido de Efeito Suspensivo à Apelação",
+        "n": 1,
+        "pct": 0.0
+      }
+    ],
+    "temas": [
+      {
+        "rotulo": "Contratos Bancários",
+        "n": 236,
+        "pct": 10.7
+      },
+      {
+        "rotulo": "Obrigação de Fazer / Não Fazer",
+        "n": 146,
+        "pct": 6.6
+      },
+      {
+        "rotulo": "Perdas e Danos",
+        "n": 112,
+        "pct": 5.1
+      },
+      {
+        "rotulo": "Revisão de contrato",
+        "n": 110,
+        "pct": 5.0
+      },
+      {
+        "rotulo": "Alienação Fiduciária",
+        "n": 91,
+        "pct": 4.1
+      },
+      {
+        "rotulo": "Defeito, nulidade ou anulação",
+        "n": 89,
+        "pct": 4.0
+      },
+      {
+        "rotulo": "Indenização por Dano Material",
+        "n": 80,
+        "pct": 3.6
+      },
+      {
+        "rotulo": "Tratamento da Própria Saúde",
+        "n": 80,
+        "pct": 3.6
+      },
+      {
+        "rotulo": "Negativação indevida",
+        "n": 79,
+        "pct": 3.6
+      },
+      {
+        "rotulo": "Cédula de Crédito Bancário",
+        "n": 72,
+        "pct": 3.3
+      },
+      {
+        "rotulo": "Seguro",
+        "n": 56,
+        "pct": 2.5
+      },
+      {
+        "rotulo": "Cartão de Crédito",
+        "n": 49,
+        "pct": 2.2
+      },
+      {
+        "rotulo": "Efeito Suspensivo / Impugnação / Embargos à Execução",
+        "n": 42,
+        "pct": 1.9
+      },
+      {
+        "rotulo": "Rescisão do contrato e devolução do dinheiro",
+        "n": 40,
+        "pct": 1.8
+      },
+      {
+        "rotulo": "Liminar",
+        "n": 37,
+        "pct": 1.7
+      },
+      {
+        "rotulo": "PASEP",
+        "n": 34,
+        "pct": 1.5
+      },
+      {
+        "rotulo": "Assistência à Saúde",
+        "n": 25,
+        "pct": 1.1
+      },
+      {
+        "rotulo": "Fornecimento de Energia Elétrica",
+        "n": 23,
+        "pct": 1.0
+      },
+      {
+        "rotulo": "Fornecimento de medicamentos",
+        "n": 22,
+        "pct": 1.0
+      },
+      {
+        "rotulo": "Fornecimento de Água",
+        "n": 20,
+        "pct": 0.9
+      }
+    ]
+  },
+  "tendencia_vs": null
+}
